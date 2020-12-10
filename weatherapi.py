@@ -90,8 +90,3 @@ def weather():
         return jsonify(error_message)
 
     return jsonify(get_weather(city, country, OPENWEATHERMAP_APPID))
-
-
-@app.route("/weather_card", methods=['GET', 'POST'])
-def weather_card(request_result):
-    pass
