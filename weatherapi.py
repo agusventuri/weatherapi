@@ -1,14 +1,20 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
+import os
 
 from data_layer import get_weather
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '=d8uE^cwQFSB46hx'
+from utils import set_env_variable
 
 CITY_REQUIRED = "City is required"
 COUNTRY_REQUIRED = "Country is required"
 COUNTRY_CODE = "Country should be a 2 character code"
 COUNTRY_LOWERCASE = "Country should be lowercase"
+ENV_VAR_EXCEPTION = "Environment variable not found"
+
+FLASK_SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
+OPENWEATHERMAP_APPID = os.environ.get("OPENWEATHERMAP_APPID")
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = FLASK_SECRET_KEY
 
 
 # index route that allows me to have a landing page that also has a form
@@ -69,5 +75,5 @@ def weather():
     if error_message is not None:
         return jsonify(error_message)
 
-    return jsonify(get_weather(city, country))
+    return jsonify(get_weather(city, country, OPENWEATHERMAP_APPID))
     # return render_template('weather.html', city=city, country=country)

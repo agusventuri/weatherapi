@@ -5,9 +5,9 @@ import xmltodict
 
 
 # this method fetches and parses content from different data sources into one json that provides the needed information
-def get_weather(city, country):
+def get_weather(city, country, appid):
     # first I fetch current weather data and create some variables for clearer code later
-    openweather_weather = fetch_openweather_weather(city, country)
+    openweather_weather = fetch_openweather_weather(city, country, appid)
 
     try:
         openweather_weather = openweather_weather["current"]
@@ -36,7 +36,7 @@ def get_weather(city, country):
     requested_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # now I fetch forecast data and remove every field I don't need
-    openweather_forecast = fetch_openweather_forecast(lat, lon)
+    openweather_forecast = fetch_openweather_forecast(lat, lon, appid)
 
     for forecast in openweather_forecast["daily"]:
         forecast.pop("dew_point", None)
@@ -77,14 +77,14 @@ def get_weather(city, country):
 # environment configuration variables
 # I fetch the data in XML mode as the JSON mode doesn't provide all the information I need.
 # I then parse the XML to a dict
-def fetch_openweather_weather(city, country):
+def fetch_openweather_weather(city, country, appid):
 
     # example for current weather
     # http://api.openweathermap.org/data/2.5/weather?q=Bogota,co&appid=1508a9a4840a5574c822d70ca2132032
 
     q = city + ", " + country
     params = {
-        'appid': '1508a9a4840a5574c822d70ca2132032',
+        'appid': appid,
         'units': 'metric',
         'mode': 'xml',
         'q': q
@@ -98,13 +98,13 @@ def fetch_openweather_weather(city, country):
 
 # here I fetch the forecast using latitude and longitude passed as parameters and units obtained form
 # environment configuration variables. I exclude information I dont need
-def fetch_openweather_forecast(lat, lon):
+def fetch_openweather_forecast(lat, lon, appid):
 
     # example for daily forecast
     # https://api.openweathermap.org/data/2.5/onecall?lat=10.46&lon=-73.25&exclude=current,hourly,minutely,alerts&appid=1508a9a4840a5574c822d70ca2132032
 
     params = {
-        'appid': '1508a9a4840a5574c822d70ca2132032',
+        'appid': appid,
         'exclude': 'current,hourly,minutely,alerts',
         'units': 'metric',
         'lat': lat,
