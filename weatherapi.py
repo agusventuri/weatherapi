@@ -37,6 +37,7 @@ def index():
 
 # the proper API route that allows me to fetch the weather and forecast information I need using city and country
 # as parameters
+# before anything I validate the parameters against the provided specifications
 @app.route("/weather", methods=['GET', 'POST'])
 def weather():
     city = request.args.get('city', None)
