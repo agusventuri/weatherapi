@@ -102,6 +102,8 @@ def weather():
     if error_message is not None:
         return jsonify(error_message), error_message["cod"]
 
+    # here I check if I already have a cached response and return it if that's the case
+    # otherwise, I fetch the data from openweathermap and cache it
     cached_response = cache.get(city + "," + country)
     if cached_response is not None:
         return jsonify(cached_response)
