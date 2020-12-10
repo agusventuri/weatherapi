@@ -7,7 +7,12 @@ import xmltodict
 # this method fetches and parses content from different data sources into one json that provides the needed information
 def get_weather(city, country):
     # first I fetch current weather data and create some variables for clearer code later
-    openweather_weather = fetch_openweather_weather(city, country)["current"]
+    openweather_weather = fetch_openweather_weather(city, country)
+
+    try:
+        openweather_weather = openweather_weather["current"]
+    except KeyError:
+        return openweather_weather["ClientError"]
 
     location_name = openweather_weather["city"]["@name"] + ", " + openweather_weather["city"]["country"]
     temperature = openweather_weather["temperature"]["@value"] + " " + openweather_weather["temperature"]["@unit"]
@@ -68,6 +73,10 @@ def get_weather(city, country):
     # return openweather_forecast
 
 
+# here I fetch the current weather using city and country passed as parameters and units obtained form
+# environment configuration variables
+# I fetch the data in XML mode as the JSON mode doesn't provide all the information I need.
+# I then parse the XML to a dict
 def fetch_openweather_weather(city, country):
 
     # example for current weather
@@ -87,6 +96,8 @@ def fetch_openweather_weather(city, country):
     return xml_response
 
 
+# here I fetch the forecast using latitude and longitude passed as parameters and units obtained form
+# environment configuration variables. I exclude information I dont need
 def fetch_openweather_forecast(lat, lon):
 
     # example for daily forecast
