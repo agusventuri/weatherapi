@@ -5,11 +5,24 @@ Here you can find an api that takes two parameters as input for its only endpoin
 It consist of two parts, a backend that takes the input and searches openweather for the information and a frontend that takes the answer and displays it.
 
 To run it you need an enviroment with python 3, flask and bootstrap. 
-Assuming you're on Linux, open your terminal and head to the directory where you have the projecto. Then run the following commands:
+Assuming you're on Linux, open your terminal and head to the directory where you have the project. Then run the following commands:
 ```
 export FLASK_APP=weatherapi
+export FLASK_SECRET_KEY=[your_secret_key]
+export OPENWEATHERMAP_APPID=[your_openweather_appid
 run flask
 ```
+Remember to replace the flask secret with a secret of your choosing and the openweather appid with the one provided by openweather.
+Without this information the project cannot run.
+
+After running this commands you can head to http://127.0.0.1:5000/ and search for a city accompanied with a 2-character country code
+
+You can also test the endpoint with a tool like Postman. The endpoint is like follows
+```
+GET /weather?city=$City&country=$Country&
+```
+You can test with this example:
+http://127.0.0.1:5000/weather?city=toronto&country=ca````````````
 
 If I have the time I'll create a dockerfile to make it easier to run this.
 
