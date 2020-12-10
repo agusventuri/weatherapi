@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 import xmltodict
@@ -37,8 +37,11 @@ def get_weather(city, country, appid):
 
     # now I fetch forecast data and remove every field I don't need
     openweather_forecast = fetch_openweather_forecast(lat, lon, appid)
+    counter = 1
 
     for forecast in openweather_forecast["daily"]:
+        forecast["date"] = (datetime.now() + timedelta(days=counter)).strftime("%Y-%m-%d")
+        counter += 1
         forecast.pop("dew_point", None)
         forecast.pop("dt", None)
         forecast.pop("feels_like", None)
