@@ -3,6 +3,7 @@ import json
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
 import requests
 import xmltodict
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '=d8uE^cwQFSB46hx'
@@ -40,25 +41,29 @@ def get_weather(city, country):
     openweather_json = fetch_openweather_json(city, country)["current"]
     location_name = openweather_json["city"]["@name"] + ", " + openweather_json["city"]["country"]
     temperature = openweather_json["temperature"]["@value"] + " " + openweather_json["temperature"]["@unit"]
-    # wind_name = openweather_json["wind"]["speed"]["name"] + ","
-    wind_name = ""
-    # wind_speed = openweather_json["wind"]["speed"]["value"] + openweather_json["wind"]["speed"]["unit"]
-    # wind_direction = "," + openweather_json["wind"]["direction"]["name"]
-    wind_direction = ","
-    # wind = wind_name + wind_speed + wind_direction
-    # wind = openweather_json["wind"]
+    wind_name = openweather_json["wind"]["speed"]["@name"] + ", "
+    wind_speed = openweather_json["wind"]["speed"]["@value"] + openweather_json["wind"]["speed"]["@unit"]
+    wind_direction = ", " + openweather_json["wind"]["direction"]["@name"]
+    wind = wind_name + wind_speed + wind_direction
+    cloudiness = openweather_json["clouds"]["@name"]
+    pressure = openweather_json["pressure"]["@value"] + " " + openweather_json["pressure"]["@unit"]
+    humidity = openweather_json["humidity"]["@value"] + openweather_json["humidity"]["@unit"]
+    sunrise = openweather_json["city"]["sun"]["@rise"] + " " + openweather_json["city"]["sun"]["@rise"]
+    sunset = openweather_json["city"]["sun"]["@set"] + " " + openweather_json["city"]["sun"]["@set"]
+    geo_coordinates = "[" + openweather_json["city"]["coord"]["@lat"] + ", " + openweather_json["city"]["coord"]["@lon"] + "]"
+    requested_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     weather_json = {
         "location_name": location_name,
         "temperature": temperature,
-        # "wind": openweather_json
-        # "cloudiness": "Scattered clouds",
-        # "pressure": "1027 hpa",
-        # "humidity": "63%",
-        # "sunrise": "06:07",
-        # "sunset": "18:00",
-        # "geo_coordinates": "[4.61, -74.08]",
-        # "requested_time": "2018-01-09 11:57:00"
+        "wind": wind,
+        "cloudiness": cloudiness,
+        "pressure": pressure,
+        "humidity": humidity,
+        "sunrise": sunrise,
+        "sunset": sunset,
+        "geo_coordinates": geo_coordinates,
+        "requested_time": requested_time
                       # "forecast": {...}
     }
     return weather_json
