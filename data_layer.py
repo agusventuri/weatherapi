@@ -18,7 +18,7 @@ def get_weather(city, country, appid):
     temperature = openweather_weather["temperature"]["@value"] + " " + openweather_weather["temperature"]["@unit"]
 
     wind_name = openweather_weather["wind"]["speed"]["@name"] + ", "
-    wind_speed = openweather_weather["wind"]["speed"]["@value"] + openweather_weather["wind"]["speed"]["@unit"]
+    wind_speed = openweather_weather["wind"]["speed"]["@value"] + " " + openweather_weather["wind"]["speed"]["@unit"]
     wind_direction = ", " + openweather_weather["wind"]["direction"]["@name"]
     wind = wind_name + wind_speed + wind_direction
 
