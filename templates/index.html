@@ -1,18 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{% block title %} Welcome to weatherapi {% endblock %}</h1>
-<form>
+<form method="post">
     <div class="form-group">
         <label for="city">city</label>
-        <input type="text" class="form-control" id="city" aria-describedby="cityHelp" placeholder="Enter city">
+        <input
+                type="text"
+                class="form-control"
+                id="city"
+                name="city"
+                aria-describedby="cityHelp"
+                placeholder="Enter city"
+                value="{{ request.form['city'] }}"
+        >
         <small id="cityHelp" class="form-text text-muted">Please enter the city for which you want to know the weather.</small>
     </div>
-    <div class="form-group">
-        <label for="country">country</label>
-        <input type="text" class="form-control" id="country" aria-describedby="countryHelp" placeholder="Enter country">
-        <small id="countryHelp" class="form-text text-muted">Please enter the country code for which you want to know the weather (two lowercase characters).</small>
+    <label for="country">country</label>
+    <input
+            type="text"
+            class="form-control"
+            id="country"
+            name="country"
+            aria-describedby="countryHelp"
+            placeholder="Enter country"
+            value="{{ request.form['country'] }}"
+    >
+    <small id="countryHelp" class="form-text text-muted">Please enter the country code for which you want to know the weather (two lowercase characters).</small>
+    <br>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Search</button>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+
+    </div>
 </form>
+
 {% endblock %}
