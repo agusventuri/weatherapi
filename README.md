@@ -22,7 +22,7 @@ You can also test the endpoint with a tool like Postman. The endpoint is like fo
 GET /weather?city=$City&country=$Country&
 ```
 You can test with this example:
-http://127.0.0.1:5000/weather?city=toronto&country=ca````````````
+http://127.0.0.1:5000/weather?city=toronto&country=ca
 
 If I have the time I'll create a dockerfile to make it easier to run this.
 
