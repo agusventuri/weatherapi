@@ -26,8 +26,8 @@ def get_weather(city, country, appid):
     pressure = openweather_weather["pressure"]["@value"] + " " + openweather_weather["pressure"]["@unit"]
     humidity = openweather_weather["humidity"]["@value"] + openweather_weather["humidity"]["@unit"]
 
-    sunrise = openweather_weather["city"]["sun"]["@rise"] + " " + openweather_weather["city"]["sun"]["@rise"]
-    sunset = openweather_weather["city"]["sun"]["@set"] + " " + openweather_weather["city"]["sun"]["@set"]
+    sunrise = openweather_weather["city"]["sun"]["@rise"][-8:]
+    sunset = openweather_weather["city"]["sun"]["@set"][-8:]
 
     lat = openweather_weather["city"]["coord"]["@lat"]
     lon = openweather_weather["city"]["coord"]["@lon"]
