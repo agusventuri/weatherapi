@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
+from flask_caching import Cache
 import os
 
 from data_layer import get_weather
@@ -13,8 +14,16 @@ ENV_VAR_EXCEPTION = "Environment variable not found"
 FLASK_SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
 OPENWEATHERMAP_APPID = os.environ.get("OPENWEATHERMAP_APPID")
 
+config = {
+    "DEBUG": True,
+    "FLASK_SECRET_KEY": FLASK_SECRET_KEY,   # some Flask specific configs
+    "CACHE_TYPE": "simple",             # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 120
+}
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = FLASK_SECRET_KEY
+app.config.from_mapping(config)
+cache = Cache(app)
 
 
 # index route that allows me to have a landing page that also has a form
@@ -93,4 +102,10 @@ def weather():
     if error_message is not None:
         return jsonify(error_message), error_message["cod"]
 
-    return jsonify(get_weather(city, country, OPENWEATHERMAP_APPID))
+    cached_response = cache.get(city + "," + country)
+    if cached_response is not None:
+        return jsonify(cached_response)
+
+    fetch_weather = get_weather(city, country, OPENWEATHERMAP_APPID)
+    cache.set(city + "," + country, fetch_weather)
+    return jsonify(fetch_weather)
