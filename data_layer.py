@@ -64,6 +64,10 @@ def get_weather(city, country):
 
 
 def fetch_openweather_weather(city, country):
+
+    # example for current weather
+    # http://api.openweathermap.org/data/2.5/weather?q=Bogota,co&appid=1508a9a4840a5574c822d70ca2132032
+
     q = city + ", " + country
     params = {
         'appid': '1508a9a4840a5574c822d70ca2132032',
@@ -79,6 +83,10 @@ def fetch_openweather_weather(city, country):
 
 
 def fetch_openweather_forecast(lat, lon):
+
+    # example for daily forecast
+    # https://api.openweathermap.org/data/2.5/onecall?lat=10.46&lon=-73.25&exclude=current,hourly,minutely,alerts&appid=1508a9a4840a5574c822d70ca2132032
+
     params = {
         'appid': '1508a9a4840a5574c822d70ca2132032',
         'exclude': 'current,hourly,minutely,alerts',
@@ -86,8 +94,6 @@ def fetch_openweather_forecast(lat, lon):
         'lat': lat,
         'lon': lon
     }
-    # example for daily forecast
-    # https://api.openweathermap.org/data/2.5/onecall?lat=10.46&lon=-73.25&exclude=current,hourly,minutely,alerts&appid=1508a9a4840a5574c822d70ca2132032
     r = requests.get(
         'http://api.openweathermap.org/data/2.5/onecall', params=params)
 
