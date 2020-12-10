@@ -18,8 +18,11 @@ def index():
         if not country:
             flash('Country is required')
 
-        if len(country) != 2 and country:
+        if country and len(country) != 2:
             flash('Country should be a 2 character code')
+
+        if country and not country.islower():
+            flash('Country should be lowercase')
 
         return redirect(url_for('index'))
 
