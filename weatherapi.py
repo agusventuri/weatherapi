@@ -9,6 +9,7 @@ COUNTRY_CODE = "Country should be a 2 character code"
 COUNTRY_LOWERCASE = "Country should be lowercase"
 ENV_VAR_EXCEPTION = "Environment variable not found"
 
+# I try to retrieve the environment variables needed to run the code
 FLASK_SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
 OPENWEATHERMAP_APPID = os.environ.get("OPENWEATHERMAP_APPID")
 
@@ -23,6 +24,7 @@ def index():
         country = request.form['country']
         city = request.form['city']
 
+        # first I validate the inputs and display error messages if needed
         error = False
 
         if not city:
@@ -44,8 +46,10 @@ def index():
         if error:
             return redirect(url_for('index'))
 
+        # then I request the actual information
         request_result = get_weather(city, country, OPENWEATHERMAP_APPID)
 
+        # if there isn't any error code in the request, I display the information, otherwise I display the error message
         try:
             if request_result["cod"] is not None:
                 flash("Error " + request_result["cod"] + " - " + request_result["message"])
@@ -87,6 +91,6 @@ def weather():
         }
 
     if error_message is not None:
-        return jsonify(error_message)
+        return jsonify(error_message), error_message["cod"]
 
     return jsonify(get_weather(city, country, OPENWEATHERMAP_APPID))

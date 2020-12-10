@@ -73,7 +73,6 @@ def get_weather(city, country, appid):
     }
 
     return weather_json
-    # return openweather_forecast
 
 
 # here I fetch the current weather using city and country passed as parameters and units obtained form
