@@ -4,7 +4,9 @@ import requests
 import xmltodict
 
 
+# this method fetches and parses content from different data sources into one json that provides the needed information
 def get_weather(city, country):
+    # first I fetch current weather data and create some variables for clearer code later
     openweather_weather = fetch_openweather_weather(city, country)["current"]
 
     location_name = openweather_weather["city"]["@name"] + ", " + openweather_weather["city"]["country"]
@@ -28,6 +30,7 @@ def get_weather(city, country):
 
     requested_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # now I fetch forecast data and remove every field I don't need
     openweather_forecast = fetch_openweather_forecast(lat, lon)
 
     for forecast in openweather_forecast["daily"]:
@@ -46,6 +49,7 @@ def get_weather(city, country):
         forecast["weather"][0].pop("main", None)
         forecast.pop("wind_deg", None)
 
+    # finally I merge all my data into one json that then I return
     weather_json = {
         "location_name": location_name,
         "temperature": temperature,
@@ -56,11 +60,12 @@ def get_weather(city, country):
         "sunrise": sunrise,
         "sunset": sunset,
         "geo_coordinates": geo_coordinates,
-        "requested_time": requested_time
-        # "forecast": {...}
+        "requested_time": requested_time,
+        "forecast": openweather_forecast["daily"]
     }
-    # return weather_json
-    return openweather_forecast
+
+    return weather_json
+    # return openweather_forecast
 
 
 def fetch_openweather_weather(city, country):
