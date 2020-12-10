@@ -23,19 +23,34 @@ def index():
         country = request.form['country']
         city = request.form['city']
 
+        error = False
+
         if not city:
             flash(CITY_REQUIRED)
+            error = True
 
         if not country:
             flash(COUNTRY_REQUIRED)
+            error = True
 
         if country and len(country) != 2:
             flash(COUNTRY_CODE)
+            error = True
 
         if country and not country.islower():
             flash(COUNTRY_LOWERCASE)
+            error = True
 
-        return redirect(url_for('index'))
+        if error:
+            return redirect(url_for('index'))
+
+        request_result = get_weather(city, country, OPENWEATHERMAP_APPID)
+
+        try:
+            if request_result["cod"] is not None:
+                flash("Error " + request_result["cod"] + " - " + request_result["message"])
+        except KeyError:
+            return render_template('weather_card.html', weather=request_result)
 
     return render_template('index.html')
 
@@ -75,4 +90,8 @@ def weather():
         return jsonify(error_message)
 
     return jsonify(get_weather(city, country, OPENWEATHERMAP_APPID))
-    # return render_template('weather.html', city=city, country=country)
+
+
+@app.route("/weather_card", methods=['GET', 'POST'])
+def weather_card(request_result):
+    pass
