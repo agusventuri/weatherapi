@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, url_for, flash, redirect, jso
 import os
 
 from data_layer import get_weather
-from utils import set_env_variable
 
 CITY_REQUIRED = "City is required"
 COUNTRY_REQUIRED = "Country is required"
