@@ -53,5 +53,4 @@ def test_country_more_than_2_chars(client):
 
 def test_ok(client):
     rv = client.get("/weather?city=valledupar&country=co")
-    print(rv.json)
     assert rv.status_code == 200
