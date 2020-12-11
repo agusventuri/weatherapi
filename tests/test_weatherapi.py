@@ -2,6 +2,7 @@ import pytest
 from weatherapi import create_app
 
 
+# created client that will run the tests
 @pytest.fixture
 def client():
     app = create_app()
