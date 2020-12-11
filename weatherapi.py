@@ -21,6 +21,7 @@ config = {
     "CACHE_DEFAULT_TIMEOUT": 120
 }
 
+
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(config)
@@ -68,7 +69,6 @@ def create_app():
 
         return render_template('index.html')
 
-
     # the proper API route that allows me to fetch the weather and forecast information I need using city and country
     # as parameters
     # before anything I validate the parameters against the provided specifications
@@ -84,6 +84,7 @@ def create_app():
                 "cod": "400",
                 "message": CITY_REQUIRED
             }
+
         if not country.strip():
             error_message = {
                 "cod": "400",
