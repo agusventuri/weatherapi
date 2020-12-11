@@ -31,13 +31,13 @@
             "name": "city",
             "in": "query",
             "required": true,
-            "description": "Name of the city we want to find",
+            "description": "Name of the city we want to find"
           },
           {
             "name": "country",
             "in": "query",
             "required": true,
-            "description": "Country code of the country where the city is",
+            "description": "Country code of the country where the city is"
           }
         ],
         "responses": {
