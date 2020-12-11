@@ -79,6 +79,13 @@ def create_app():
 
         error_message = None
 
+        if city is None or country is None:
+            error_message = {
+                "cod": "400",
+                "message": CITY_REQUIRED + "\n" + COUNTRY_REQUIRED
+            }
+            return jsonify(error_message), error_message["cod"]
+
         if not city.strip():
             error_message = {
                 "cod": "400",

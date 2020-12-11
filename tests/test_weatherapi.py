@@ -11,9 +11,15 @@ def client():
 
 
 def test_no_city(client):
-    params = {
-        "city": "",
-        "country": "co"
-    }
     rv = client.get("/weather?city=&country=co")
+    assert rv.json["cod"] == "400"
+
+
+def test_no_country(client):
+    rv = client.get("/weather?city=valledupar&country=")
+    assert rv.json["cod"] == "400"
+
+
+def test_no_data(client):
+    rv = client.get("/weather")
     assert rv.json["cod"] == "400"
