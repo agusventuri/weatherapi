@@ -23,13 +23,12 @@ config = {
 
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_mapping(config)
-    cache = Cache(app)
-
+    flask_app = Flask(__name__)
+    flask_app.config.from_mapping(config)
+    cache = Cache(flask_app)
 
     # index route that allows me to have a landing page that also has a form
-    @app.route('/', methods=['GET', 'POST'])
+    @flask_app.route('/', methods=['GET', 'POST'])
     def index():
         if request.method == 'POST':
             country = request.form['country']
@@ -60,7 +59,8 @@ def create_app():
             # then I request the actual information
             request_result = get_weather(city, country, OPENWEATHERMAP_APPID)
 
-            # if there isn't any error code in the request, I display the information, otherwise I display the error message
+            # if there isn't any error code in the request, I display the information
+            # otherwise I display the error message
             try:
                 if request_result["cod"] is not None:
                     flash("Error " + request_result["cod"] + " - " + request_result["message"])
@@ -72,7 +72,7 @@ def create_app():
     # the proper API route that allows me to fetch the weather and forecast information I need using city and country
     # as parameters
     # before anything I validate the parameters against the provided specifications
-    @app.route("/weather", methods=['GET', 'POST'])
+    @flask_app.route("/weather", methods=['GET', 'POST'])
     def weather():
         city = request.args.get('city', None)
         country = request.args.get('country', None)
@@ -121,7 +121,7 @@ def create_app():
         cache.set(city + "," + country, fetch_weather)
         return jsonify(fetch_weather)
 
-    return app
+    return flask_app
 
 
 if __name__ == "__main__":
