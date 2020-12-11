@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
 from flask_caching import Cache
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 import os
 
 from data_layer import get_weather
@@ -22,11 +23,27 @@ config = {
     "CACHE_DEFAULT_TIMEOUT": 120
 }
 
+# cofiguration variables so swagger can find our api definition
+SWAGGER_URL = '/api/docs'
+API_URL = '/static/swagger.json'
+
 
 def create_app():
     flask_app = Flask(__name__)
+    cors = CORS(flask_app)
     flask_app.config.from_mapping(config)
     cache = Cache(flask_app)
+
+    # initializing swagger config
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+        API_URL,
+        config={  # Swagger UI config overrides
+            'app_name': "weatherapi"
+        },
+    )
+
+    flask_app.register_blueprint(swaggerui_blueprint)
 
     # index route that allows me to have a landing page that also has a form
     @flask_app.route('/', methods=['GET', 'POST'])

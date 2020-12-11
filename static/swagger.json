@@ -1,0 +1,57 @@
+{
+
+  "openapi": "3.0.0",
+  "info": {
+    "description": "api documentation for the weatherapi project",
+    "version": "1.0.0",
+    "title": "weatherapi",
+    "contact": {
+      "email": "agus97v@gmail.com"
+    },
+    "license": {
+      "name": "GPL-3.0-only",
+      "url": "https://opensource.org/licenses/GPL-3.0"
+    }
+  },
+  "tags": [
+    {
+      "name": "Weather information",
+      "description": "API for requesting weather information"
+    }
+  ],
+  "paths": {
+    "/weather?city={city}&country={country}": {
+      "get": {
+        "tags": [
+          "Weather Request"
+        ],
+        "summary": "Get current weather and 8-day forecast for the given city and country",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": true,
+            "description": "Name of the city we want to find",
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "description": "Country code of the country where the city is",
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Bad request."
+          },
+          "401": {
+            "description": "Unauthorized. Openweather appid not set."
+          }
+        }
+      }
+    }
+  }
+}
