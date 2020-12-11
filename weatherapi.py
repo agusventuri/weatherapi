@@ -21,93 +21,101 @@ config = {
     "CACHE_DEFAULT_TIMEOUT": 120
 }
 
-app = Flask(__name__)
-app.config.from_mapping(config)
-cache = Cache(app)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_mapping(config)
+    cache = Cache(app)
 
 
-# index route that allows me to have a landing page that also has a form
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        country = request.form['country']
-        city = request.form['city']
+    # index route that allows me to have a landing page that also has a form
+    @app.route('/', methods=['GET', 'POST'])
+    def index():
+        if request.method == 'POST':
+            country = request.form['country']
+            city = request.form['city']
 
-        # first I validate the inputs and display error messages if needed
-        error = False
+            # first I validate the inputs and display error messages if needed
+            error = False
 
-        if not city:
-            flash(CITY_REQUIRED)
-            error = True
+            if not city:
+                flash(CITY_REQUIRED)
+                error = True
 
-        if not country:
-            flash(COUNTRY_REQUIRED)
-            error = True
+            if not country:
+                flash(COUNTRY_REQUIRED)
+                error = True
 
-        if country and len(country) != 2:
-            flash(COUNTRY_CODE)
-            error = True
+            if country and len(country) != 2:
+                flash(COUNTRY_CODE)
+                error = True
 
-        if country and not country.islower():
-            flash(COUNTRY_LOWERCASE)
-            error = True
+            if country and not country.islower():
+                flash(COUNTRY_LOWERCASE)
+                error = True
 
-        if error:
-            return redirect(url_for('index'))
+            if error:
+                return redirect(url_for('index'))
 
-        # then I request the actual information
-        request_result = get_weather(city, country, OPENWEATHERMAP_APPID)
+            # then I request the actual information
+            request_result = get_weather(city, country, OPENWEATHERMAP_APPID)
 
-        # if there isn't any error code in the request, I display the information, otherwise I display the error message
-        try:
-            if request_result["cod"] is not None:
-                flash("Error " + request_result["cod"] + " - " + request_result["message"])
-        except KeyError:
-            return render_template('weather_card.html', weather=request_result)
+            # if there isn't any error code in the request, I display the information, otherwise I display the error message
+            try:
+                if request_result["cod"] is not None:
+                    flash("Error " + request_result["cod"] + " - " + request_result["message"])
+            except KeyError:
+                return render_template('weather_card.html', weather=request_result)
 
-    return render_template('index.html')
+        return render_template('index.html')
 
 
-# the proper API route that allows me to fetch the weather and forecast information I need using city and country
-# as parameters
-# before anything I validate the parameters against the provided specifications
-@app.route("/weather", methods=['GET', 'POST'])
-def weather():
-    city = request.args.get('city', None)
-    country = request.args.get('country', None)
+    # the proper API route that allows me to fetch the weather and forecast information I need using city and country
+    # as parameters
+    # before anything I validate the parameters against the provided specifications
+    @app.route("/weather", methods=['GET', 'POST'])
+    def weather():
+        city = request.args.get('city', None)
+        country = request.args.get('country', None)
 
-    error_message = None
+        error_message = None
 
-    if not city.strip():
-        error_message = {
-            "cod": "400",
-            "message": CITY_REQUIRED
-        }
-    if not country.strip():
-        error_message = {
-            "cod": "400",
-            "message": COUNTRY_REQUIRED
-        }
-    elif not country.islower():
-        error_message = {
-            "cod": "400",
-            "message": COUNTRY_LOWERCASE
-        }
-    elif len(country) != 2:
-        error_message = {
-            "cod": "400",
-            "message": COUNTRY_CODE
-        }
+        if not city.strip():
+            error_message = {
+                "cod": "400",
+                "message": CITY_REQUIRED
+            }
+        if not country.strip():
+            error_message = {
+                "cod": "400",
+                "message": COUNTRY_REQUIRED
+            }
+        elif not country.islower():
+            error_message = {
+                "cod": "400",
+                "message": COUNTRY_LOWERCASE
+            }
+        elif len(country) != 2:
+            error_message = {
+                "cod": "400",
+                "message": COUNTRY_CODE
+            }
 
-    if error_message is not None:
-        return jsonify(error_message), error_message["cod"]
+        if error_message is not None:
+            return jsonify(error_message), error_message["cod"]
 
-    # here I check if I already have a cached response and return it if that's the case
-    # otherwise, I fetch the data from openweathermap and cache it
-    cached_response = cache.get(city + "," + country)
-    if cached_response is not None:
-        return jsonify(cached_response)
+        # here I check if I already have a cached response and return it if that's the case
+        # otherwise, I fetch the data from openweathermap and cache it
+        cached_response = cache.get(city + "," + country)
+        if cached_response is not None:
+            return jsonify(cached_response)
 
-    fetch_weather = get_weather(city, country, OPENWEATHERMAP_APPID)
-    cache.set(city + "," + country, fetch_weather)
-    return jsonify(fetch_weather)
+        fetch_weather = get_weather(city, country, OPENWEATHERMAP_APPID)
+        cache.set(city + "," + country, fetch_weather)
+        return jsonify(fetch_weather)
+
+    return app
+
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run()
