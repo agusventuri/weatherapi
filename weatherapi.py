@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, jsonify
 from flask_caching import Cache
+from flask_swagger_ui import get_swaggerui_blueprint
 import os
 
 from data_layer import get_weather
