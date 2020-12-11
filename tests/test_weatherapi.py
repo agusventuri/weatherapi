@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from weatherapi import create_app
 
